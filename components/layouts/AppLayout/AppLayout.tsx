@@ -23,7 +23,12 @@ import { PropsWithChildren } from "react"
 
 export function AppLayout({ children }: PropsWithChildren) {
   const pathname = usePathname()
-  const pageName = PAGE_NAMES[pathname] || "..."
+  const pageName =
+    pathname.startsWith("/projects/") && pathname.endsWith("/team")
+      ? "Project Team"
+      : pathname.startsWith("/projects/") && pathname.endsWith("/sprints")
+        ? "Sprints"
+      : PAGE_NAMES[pathname] || "..."
 
   return (
     <SidebarProvider>

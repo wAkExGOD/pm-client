@@ -25,14 +25,20 @@ export function SignUpForm({ onToggleClick }: SignUpFormProps) {
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   })
 
-  const { mutate: signUp } = useMutation({
-    mutationFn: async (signUpData: SignUpSchema) => authApi.signUp(signUpData),
+  const { mutate: signUp, isPending } = useMutation({
+    mutationFn: async (signUpData: SignUpSchema) =>
+      authApi.signUp({
+        name: signUpData.name,
+        email: signUpData.email,
+        password: signUpData.password,
+      }),
     onSuccess: () => {
       toast.success("Success!", {
         description: "Verification link has been sent to your email",
@@ -51,6 +57,19 @@ export function SignUpForm({ onToggleClick }: SignUpFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-6">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="grid gap-2">
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="John Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="email"
@@ -94,7 +113,7 @@ export function SignUpForm({ onToggleClick }: SignUpFormProps) {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isPending}>
             Sign up
           </Button>
         </div>

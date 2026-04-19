@@ -1,2 +1,5 @@
 export * from "./Auth/Auth"
+export * from "./Projects/ProjectsDashboard"
+export * from "./Projects/ProjectTeam"
+export * from "./Sprints/SprintsPage"
 export * from "./Settings/Settings"

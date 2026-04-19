@@ -1,6 +1,9 @@
 export type User = {
   id: number
+  name: string
   email: string
+  createdAt: string
+  verified: boolean
 }
 
 export type LoggedInUser = {
@@ -9,6 +12,7 @@ export type LoggedInUser = {
 }
 
 export type AuthDto = {
+  name?: string
   email: string
   password: string
 }

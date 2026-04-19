@@ -22,7 +22,20 @@ import { useAuth } from "@/hooks/useAuth"
 import Link from "next/link"
 import { ROUTES } from "@/lib/constants/routes"
 
-const getFirstTwoLetters = (str: string) => str.slice(0, 2).toLocaleUpperCase()
+const getInitials = (name: string, email: string) => {
+  const normalizedName = name.trim()
+
+  if (!normalizedName) {
+    return email.slice(0, 2).toLocaleUpperCase()
+  }
+
+  return normalizedName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toLocaleUpperCase() ?? "")
+    .join("")
+}
 
 export function NavUser() {
   const { user, logout } = useAuth()
@@ -32,7 +45,7 @@ export function NavUser() {
     return null
   }
 
-  const shortNickname = getFirstTwoLetters(user.email)
+  const shortNickname = getInitials(user.name, user.email)
 
   return (
     <SidebarMenu>
@@ -50,6 +63,7 @@ export function NavUser() {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -70,6 +84,7 @@ export function NavUser() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">{user.name}</span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>

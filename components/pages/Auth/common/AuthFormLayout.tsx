@@ -37,7 +37,7 @@ export function AuthFormLayout({ process, children }: AuthFormLayoutProps) {
         <div className="flex h-8 w-8 items-center justify-center rounded-md">
           <Command className="size-6" />
         </div>
-        <span>Finances App</span>
+        <span>Project Management App</span>
       </div>
       <div className="flex flex-col gap-6">
         <Card>

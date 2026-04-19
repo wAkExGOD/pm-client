@@ -16,6 +16,10 @@ export const logInSchema = z.object({
 
 export const signUpSchema = logInSchema
   .extend({
+    name: z
+      .string()
+      .min(2, "Name is too short")
+      .max(50, "Name is too long"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {

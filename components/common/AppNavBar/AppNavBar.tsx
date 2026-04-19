@@ -1,5 +1,9 @@
+"use client"
+
 import { ComponentProps } from "react"
-import { ShoppingCart, Settings2, Command } from "lucide-react"
+import { FolderKanban, Settings2, Command, Users, Timer } from "lucide-react"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
 
 import {
   Sidebar,
@@ -10,25 +14,51 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { ROUTES } from "@/lib/constants/routes"
+import { useProjects } from "@/hooks/useProjects"
 import { NavMain } from "./common/NavMain"
 import { NavUser } from "./common/NavUser"
-import Link from "next/link"
-
-const navMain = [
-  {
-    title: "Purchases",
-    url: ROUTES.HOME,
-    icon: ShoppingCart,
-  },
-  {
-    title: "Settings",
-    url: ROUTES.SETTINGS,
-    icon: Settings2,
-  },
-]
 
 export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const { projects, selectedProjectId, setSelectedProjectId, selectedProject } =
+    useProjects()
+
+  const navMain = [
+    {
+      title: "Projects",
+      url: ROUTES.HOME,
+      icon: FolderKanban,
+    },
+    ...(selectedProject
+      ? [
+          {
+            title: "Team",
+            url: ROUTES.projectTeam(selectedProject.id),
+            icon: Users,
+          },
+          {
+            title: "Sprints",
+            url: ROUTES.projectSprints(selectedProject.id),
+            icon: Timer,
+          },
+        ]
+      : []),
+    {
+      title: "Settings",
+      url: ROUTES.SETTINGS,
+      icon: Settings2,
+    },
+  ]
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -40,7 +70,7 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Finances</span>
+                  <span className="truncate font-medium">Management</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -48,6 +78,35 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
+        <div className="px-2 pb-2">
+          <Select
+            value={selectedProjectId ? String(selectedProjectId) : undefined}
+            onValueChange={(value) => {
+              const projectId = Number(value)
+              setSelectedProjectId(projectId)
+
+              if (pathname.startsWith("/projects/")) {
+                if (pathname.endsWith("/sprints")) {
+                  router.push(ROUTES.projectSprints(projectId))
+                  return
+                }
+
+                router.push(ROUTES.projectTeam(projectId))
+              }
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select project" />
+            </SelectTrigger>
+            <SelectContent>
+              {projects.map((project) => (
+                <SelectItem key={project.id} value={String(project.id)}>
+                  {project.key} · {project.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>

@@ -36,8 +36,9 @@ export const apiInstance = async <T>(
 
   if (!result.ok) {
     return await result.json().then((response) => {
-      // response = message, error, statusCode
-      const errorMessage = response?.message || "Unexpected error"
+      const errorMessage = Array.isArray(response?.message)
+        ? response.message.join(", ")
+        : response?.message || "Unexpected error"
       throw new ApiError(errorMessage)
     })
   }

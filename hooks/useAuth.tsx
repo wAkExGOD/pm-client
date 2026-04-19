@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query"
 import { ApiError } from "next/dist/server/api-utils"
 import { usePathname, useRouter } from "next/navigation"
 import { PropsWithChildren, createContext, useContext } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 export type AuthContextType = {
@@ -19,14 +20,22 @@ export type AuthContextType = {
 }
 
 export const AUTH_TOKEN_KEY = "project-management-app-token"
-export const AUTHED_GUARD_ROUTES = [ROUTES.HOME, ROUTES.SETTINGS] as const
+export const AUTHED_GUARD_ROUTE_PREFIXES = [
+  ROUTES.HOME,
+  ROUTES.SETTINGS,
+  "/projects/",
+] as const
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const pathname = usePathname()
-  const isAuthedGuardRoute = AUTHED_GUARD_ROUTES.includes(pathname)
+  const isAuthedGuardRoute =
+    pathname === ROUTES.HOME ||
+    pathname === ROUTES.SETTINGS ||
+    pathname.startsWith("/projects/")
   const router = useRouter()
+  const queryClient = useQueryClient()
   const {
     data: user,
     isLoading,
@@ -36,6 +45,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     queryFn: async () => {
       try {
         const user = await authApi.getMe()
+        console.log(user)
 
         return user
       } catch (error) {
@@ -51,9 +61,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const login = (data: LoggedInUser) => {
     localStorage.setItem(AUTH_TOKEN_KEY, data.access_token)
+    queryClient.setQueryData(["user"], data.user)
   }
   const logout = () => {
     localStorage.removeItem(AUTH_TOKEN_KEY)
+    queryClient.removeQueries({ queryKey: ["user"] })
     router.push(ROUTES.AUTH)
   }
 

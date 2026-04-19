@@ -24,7 +24,7 @@ export const authApi = {
       method: "POST",
       json: changePasswordData,
     }),
-  signUp: (signUpData: AuthDto) =>
+  signUp: (signUpData: Required<AuthDto>) =>
     apiInstance("/auth/register", {
       method: "POST",
       json: signUpData,
