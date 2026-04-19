@@ -45,7 +45,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     queryFn: async () => {
       try {
         const user = await authApi.getMe()
-        console.log(user)
 
         return user
       } catch (error) {

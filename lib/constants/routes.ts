@@ -3,5 +3,8 @@ export const ROUTES = {
   AUTH: "/auth",
   SETTINGS: "/settings",
   projectTeam: (projectId: number) => `/projects/${projectId}/team`,
+  projectIssues: (projectId: number) => `/projects/${projectId}/issues`,
+  projectIssue: (projectId: number, issueId: number) =>
+    `/projects/${projectId}/issues/${issueId}`,
   projectSprints: (projectId: number) => `/projects/${projectId}/sprints`,
 }

@@ -1,7 +1,14 @@
 "use client"
 
 import { ComponentProps } from "react"
-import { FolderKanban, Settings2, Command, Users, Timer } from "lucide-react"
+import {
+  FolderKanban,
+  Settings2,
+  Command,
+  Users,
+  Timer,
+  Ticket,
+} from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 
@@ -41,6 +48,11 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
     ...(selectedProject
       ? [
           {
+            title: "Issues",
+            url: ROUTES.projectIssues(selectedProject.id),
+            icon: Ticket,
+          },
+          {
             title: "Team",
             url: ROUTES.projectTeam(selectedProject.id),
             icon: Users,
@@ -58,6 +70,25 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
       icon: Settings2,
     },
   ]
+
+  const navigateProjectRoute = (projectId: number) => {
+    if (pathname.endsWith("/sprints")) {
+      router.push(ROUTES.projectSprints(projectId))
+      return
+    }
+
+    if (pathname.includes("/issues/")) {
+      router.push(ROUTES.projectIssues(projectId))
+      return
+    }
+
+    if (pathname.endsWith("/issues")) {
+      router.push(ROUTES.projectIssues(projectId))
+      return
+    }
+
+    router.push(ROUTES.projectTeam(projectId))
+  }
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -86,12 +117,7 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
               setSelectedProjectId(projectId)
 
               if (pathname.startsWith("/projects/")) {
-                if (pathname.endsWith("/sprints")) {
-                  router.push(ROUTES.projectSprints(projectId))
-                  return
-                }
-
-                router.push(ROUTES.projectTeam(projectId))
+                navigateProjectRoute(projectId)
               }
             }}
           >

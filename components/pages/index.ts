@@ -1,4 +1,6 @@
 export * from "./Auth/Auth"
+export * from "./Issues/IssueDetailsPage"
+export * from "./Issues/IssuesPage"
 export * from "./Projects/ProjectsDashboard"
 export * from "./Projects/ProjectTeam"
 export * from "./Sprints/SprintsPage"
