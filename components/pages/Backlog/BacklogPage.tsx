@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { useProjects } from "@/hooks/useProjects"
 import { ROUTES } from "@/lib/constants/routes"
-import { type BacklogFilters } from "@/types/Issue"
+import { ISSUE_STATUS_LABELS, type BacklogFilters } from "@/types/Issue"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -171,7 +171,7 @@ export function BacklogPage({ projectId }: BacklogPageProps) {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {issue.type} · {issue.priority} · {issue.status}
+                    {issue.type} · {issue.priority} · {ISSUE_STATUS_LABELS[issue.status]}
                   </p>
                   <Link
                     href={ROUTES.projectIssue(projectId, issue.id)}

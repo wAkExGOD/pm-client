@@ -9,6 +9,7 @@ import {
   Timer,
   Ticket,
   ListTodo,
+  Columns3,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -54,6 +55,11 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
             icon: ListTodo,
           },
           {
+            title: "Board",
+            url: ROUTES.projectBoard(selectedProject.id),
+            icon: Columns3,
+          },
+          {
             title: "Issues",
             url: ROUTES.projectIssues(selectedProject.id),
             icon: Ticket,
@@ -80,6 +86,11 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
   const navigateProjectRoute = (projectId: number) => {
     if (pathname.endsWith("/backlog")) {
       router.push(ROUTES.projectBacklog(projectId))
+      return
+    }
+
+    if (pathname.endsWith("/board")) {
+      router.push(ROUTES.projectBoard(projectId))
       return
     }
 

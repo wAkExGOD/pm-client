@@ -1,6 +1,20 @@
 export type IssueType = "BUG" | "TASK" | "STORY"
 export type IssuePriority = "LOW" | "MEDIUM" | "HIGH"
-export type IssueStatus = "TODO" | "IN_PROGRESS" | "DONE"
+export type IssueStatus = "TODO" | "IN_PROGRESS" | "CODE_REVIEW" | "DONE"
+
+export const ISSUE_STATUSES: IssueStatus[] = [
+  "TODO",
+  "IN_PROGRESS",
+  "CODE_REVIEW",
+  "DONE",
+]
+
+export const ISSUE_STATUS_LABELS: Record<IssueStatus, string> = {
+  TODO: "To do",
+  IN_PROGRESS: "In progress",
+  CODE_REVIEW: "Code review",
+  DONE: "Done",
+}
 
 export type IssueUser = {
   id: number
@@ -78,4 +92,13 @@ export type BacklogFilters = {
   search?: string
   sortBy?: "priority" | "createdAt"
   order?: "asc" | "desc"
+}
+
+export type BoardColumn = {
+  status: IssueStatus
+  items: Issue[]
+}
+
+export type BoardResponse = {
+  columns: BoardColumn[]
 }

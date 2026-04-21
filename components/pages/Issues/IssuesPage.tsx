@@ -23,6 +23,8 @@ import { useProjects } from "@/hooks/useProjects"
 import { ROUTES } from "@/lib/constants/routes"
 import {
   type CreateIssueDto,
+  ISSUE_STATUS_LABELS,
+  ISSUE_STATUSES,
   type IssueFilters,
   type IssuePriority,
   type IssueStatus,
@@ -40,8 +42,6 @@ type IssuesPageProps = {
 
 const ISSUE_TYPES: IssueType[] = ["TASK", "BUG", "STORY"]
 const ISSUE_PRIORITIES: IssuePriority[] = ["LOW", "MEDIUM", "HIGH"]
-const ISSUE_STATUSES: IssueStatus[] = ["TODO", "IN_PROGRESS", "DONE"]
-
 export function IssuesPage({ projectId }: IssuesPageProps) {
   const queryClient = useQueryClient()
   const { setSelectedProjectId } = useProjects()
@@ -240,7 +240,7 @@ export function IssuesPage({ projectId }: IssuesPageProps) {
                           <SelectContent>
                             {ISSUE_STATUSES.map((status) => (
                               <SelectItem key={status} value={status}>
-                                {status}
+                                {ISSUE_STATUS_LABELS[status]}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -360,7 +360,7 @@ export function IssuesPage({ projectId }: IssuesPageProps) {
                   <SelectItem value="all-statuses">All statuses</SelectItem>
                   {ISSUE_STATUSES.map((status) => (
                     <SelectItem key={status} value={status}>
-                      {status}
+                      {ISSUE_STATUS_LABELS[status]}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -430,7 +430,7 @@ export function IssuesPage({ projectId }: IssuesPageProps) {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground">
-                        {issue.type} · {issue.priority} · {issue.status}
+                        {issue.type} · {issue.priority} · {ISSUE_STATUS_LABELS[issue.status]}
                       </p>
                       <h3 className="font-semibold">{issue.title}</h3>
                       <p className="mt-1 text-sm text-muted-foreground">

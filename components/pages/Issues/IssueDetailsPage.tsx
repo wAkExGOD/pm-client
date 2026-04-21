@@ -22,6 +22,8 @@ import {
 import { useProjects } from "@/hooks/useProjects"
 import { ROUTES } from "@/lib/constants/routes"
 import {
+  ISSUE_STATUS_LABELS,
+  ISSUE_STATUSES,
   type IssuePriority,
   type IssueStatus,
   type IssueType,
@@ -40,8 +42,6 @@ type IssueDetailsPageProps = {
 
 const ISSUE_TYPES: IssueType[] = ["TASK", "BUG", "STORY"]
 const ISSUE_PRIORITIES: IssuePriority[] = ["LOW", "MEDIUM", "HIGH"]
-const ISSUE_STATUSES: IssueStatus[] = ["TODO", "IN_PROGRESS", "DONE"]
-
 export function IssueDetailsPage({
   projectId,
   issueId,
@@ -91,11 +91,6 @@ export function IssueDetailsPage({
       return
     }
 
-    console.log(
-      issueQuery.data,
-      issueQuery.data.assigneeId ?? undefined,
-      issueQuery.data.sprintId ?? undefined,
-    )
     form.reset({
       title: issueQuery.data.title,
       description: issueQuery.data.description || "",
@@ -264,7 +259,7 @@ export function IssueDetailsPage({
                         <SelectContent>
                           {ISSUE_STATUSES.map((status) => (
                             <SelectItem key={status} value={status}>
-                              {status}
+                              {ISSUE_STATUS_LABELS[status]}
                             </SelectItem>
                           ))}
                         </SelectContent>

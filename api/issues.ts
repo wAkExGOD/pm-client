@@ -2,6 +2,7 @@ import { apiInstance } from "./instance"
 import {
   BacklogFilters,
   BacklogResponse,
+  BoardResponse,
   CreateIssueDto,
   Issue,
   IssueFilters,
@@ -58,6 +59,8 @@ export const issuesApi = {
     apiInstance<BacklogResponse>(
       `/projects/${projectId}/backlog${buildIssueQuery(filters)}`,
     ),
+  getBoard: (projectId: number) =>
+    apiInstance<BoardResponse>(`/projects/${projectId}/board`),
   moveToSprint: (projectId: number, issueId: number, sprintId?: number) =>
     apiInstance<Issue>(`/projects/${projectId}/issues/${issueId}/move-to-sprint`, {
       method: "POST",
