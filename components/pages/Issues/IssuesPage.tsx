@@ -1,6 +1,6 @@
 "use client"
 
-import { issuesApi, projectsApi, sprintsApi } from "@/api"
+import { issuesApi, projectsApi, releasesApi, sprintsApi } from "@/api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -69,6 +69,11 @@ export function IssuesPage({ projectId }: IssuesPageProps) {
     queryFn: () => sprintsApi.list(projectId),
   })
 
+  const releasesQuery = useQuery({
+    queryKey: ["releases", projectId, "issue-form"],
+    queryFn: () => releasesApi.list(projectId),
+  })
+
   const issuesQuery = useQuery({
     queryKey: ["issues", projectId, filters],
     queryFn: () => issuesApi.list(projectId, filters),
@@ -85,7 +90,10 @@ export function IssuesPage({ projectId }: IssuesPageProps) {
   })
 
   const refreshIssues = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["issues", projectId] })
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["issues", projectId] }),
+      queryClient.invalidateQueries({ queryKey: ["releases", projectId] }),
+    ])
   }
 
   const createIssueMutation = useMutation({
@@ -304,6 +312,44 @@ export function IssuesPage({ projectId }: IssuesPageProps) {
                           {sprintsQuery.data?.map((sprint) => (
                             <SelectItem key={sprint.id} value={String(sprint.id)}>
                               {sprint.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="releaseId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Release</FormLabel>
+                      <Select
+                        onValueChange={(value) =>
+                          field.onChange(
+                            value === "no-release" ? undefined : Number(value),
+                          )
+                        }
+                        defaultValue={
+                          field.value !== undefined
+                            ? String(field.value)
+                            : "no-release"
+                        }
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="no-release">No release</SelectItem>
+                          {releasesQuery.data?.map((release) => (
+                            <SelectItem
+                              key={release.id}
+                              value={String(release.id)}
+                            >
+                              {release.name}
                             </SelectItem>
                           ))}
                         </SelectContent>

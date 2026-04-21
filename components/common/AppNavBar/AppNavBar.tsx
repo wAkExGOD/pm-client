@@ -10,6 +10,7 @@ import {
   Ticket,
   ListTodo,
   Columns3,
+  Rocket,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -65,6 +66,11 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
             icon: Ticket,
           },
           {
+            title: "Releases",
+            url: ROUTES.projectReleases(selectedProject.id),
+            icon: Rocket,
+          },
+          {
             title: "Team",
             url: ROUTES.projectTeam(selectedProject.id),
             icon: Users,
@@ -96,6 +102,16 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
 
     if (pathname.endsWith("/sprints")) {
       router.push(ROUTES.projectSprints(projectId))
+      return
+    }
+
+    if (pathname.includes("/releases/")) {
+      router.push(ROUTES.projectReleases(projectId))
+      return
+    }
+
+    if (pathname.endsWith("/releases")) {
+      router.push(ROUTES.projectReleases(projectId))
       return
     }
 

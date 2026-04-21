@@ -27,9 +27,13 @@ export function AppLayout({ children }: PropsWithChildren) {
     pathname.startsWith("/projects/") && pathname.endsWith("/team")
       ? "Project Team"
       : pathname.startsWith("/projects/") && pathname.endsWith("/backlog")
-        ? "Backlog"
+      ? "Backlog"
       : pathname.startsWith("/projects/") && pathname.endsWith("/board")
         ? "Board"
+      : pathname.startsWith("/projects/") && pathname.includes("/releases/")
+        ? "Release Details"
+      : pathname.startsWith("/projects/") && pathname.endsWith("/releases")
+        ? "Releases"
       : pathname.startsWith("/projects/") && pathname.includes("/issues/")
         ? "Issue Details"
       : pathname.startsWith("/projects/") && pathname.endsWith("/issues")

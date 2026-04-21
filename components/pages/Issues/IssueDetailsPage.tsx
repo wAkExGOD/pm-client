@@ -1,6 +1,6 @@
 "use client"
 
-import { issuesApi, projectsApi, sprintsApi } from "@/api"
+import { issuesApi, projectsApi, releasesApi, sprintsApi } from "@/api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -74,6 +74,11 @@ export function IssueDetailsPage({
     queryFn: () => sprintsApi.list(projectId),
   })
 
+  const releasesQuery = useQuery({
+    queryKey: ["releases", projectId, "issue-form"],
+    queryFn: () => releasesApi.list(projectId),
+  })
+
   const form = useForm<UpdateIssueDto>({
     defaultValues: {
       title: "",
@@ -83,6 +88,7 @@ export function IssueDetailsPage({
       status: "TODO",
       assigneeId: undefined,
       sprintId: undefined,
+      releaseId: undefined,
     },
   })
 
@@ -99,6 +105,7 @@ export function IssueDetailsPage({
       status: issueQuery.data.status,
       assigneeId: issueQuery.data.assigneeId ?? undefined,
       sprintId: issueQuery.data.sprintId ?? undefined,
+      releaseId: issueQuery.data.releaseId ?? undefined,
     })
   }, [form, issueQuery.data])
 
@@ -115,6 +122,8 @@ export function IssueDetailsPage({
           queryKey: ["issue", projectId, issueId],
         }),
         queryClient.invalidateQueries({ queryKey: ["issues", projectId] }),
+        queryClient.invalidateQueries({ queryKey: ["releases", projectId] }),
+        queryClient.invalidateQueries({ queryKey: ["release", projectId] }),
       ])
       toast.success("Issue updated")
     },
@@ -190,6 +199,7 @@ export function IssueDetailsPage({
                     <FormItem>
                       <FormLabel>Type</FormLabel>
                       <Select
+                        key={field.value}
                         onValueChange={(value) =>
                           field.onChange(value as IssueType)
                         }
@@ -218,6 +228,7 @@ export function IssueDetailsPage({
                     <FormItem>
                       <FormLabel>Priority</FormLabel>
                       <Select
+                        key={field.value}
                         onValueChange={(value) =>
                           field.onChange(value as IssuePriority)
                         }
@@ -246,6 +257,7 @@ export function IssueDetailsPage({
                     <FormItem>
                       <FormLabel>Status</FormLabel>
                       <Select
+                        key={field.value}
                         onValueChange={(value) =>
                           field.onChange(value as IssueStatus)
                         }
@@ -340,6 +352,45 @@ export function IssueDetailsPage({
                               value={String(sprint.id)}
                             >
                               {sprint.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="releaseId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Release</FormLabel>
+                      <Select
+                        key={field.value}
+                        onValueChange={(value) =>
+                          field.onChange(
+                            value === "no-release" ? undefined : Number(value),
+                          )
+                        }
+                        value={
+                          field.value !== undefined
+                            ? String(field.value)
+                            : "no-release"
+                        }
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select release" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="no-release">No release</SelectItem>
+                          {releasesQuery.data?.map((release) => (
+                            <SelectItem
+                              key={release.id}
+                              value={String(release.id)}
+                            >
+                              {release.name}
                             </SelectItem>
                           ))}
                         </SelectContent>

@@ -28,6 +28,13 @@ export type IssueSprint = {
   isActive: boolean
 }
 
+export type IssueRelease = {
+  id: number
+  name: string
+  status: "UNRELEASED" | "RELEASED"
+  releaseDate: string
+}
+
 export type Issue = {
   id: number
   projectId: number
@@ -39,11 +46,13 @@ export type Issue = {
   assigneeId: number | null
   reporterId: number
   sprintId: number | null
+  releaseId: number | null
   createdAt: string
   updatedAt: string
   assignee: IssueUser | null
   reporter: IssueUser
   sprint: IssueSprint | null
+  release: IssueRelease | null
 }
 
 export type IssueListResponse = {
@@ -62,6 +71,7 @@ export type CreateIssueDto = {
   status?: IssueStatus
   assigneeId?: number
   sprintId?: number
+  releaseId?: number
 }
 
 export type UpdateIssueDto = Partial<CreateIssueDto>
@@ -75,6 +85,7 @@ export type IssueFilters = {
   assigneeId?: number
   reporterId?: number
   sprintId?: number | null
+  releaseId?: number | null
   search?: string
 }
 
