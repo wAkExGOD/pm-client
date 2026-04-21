@@ -26,6 +26,8 @@ export function AppLayout({ children }: PropsWithChildren) {
   const pageName =
     pathname.startsWith("/projects/") && pathname.endsWith("/team")
       ? "Project Team"
+      : pathname.startsWith("/projects/") && pathname.endsWith("/backlog")
+        ? "Backlog"
       : pathname.startsWith("/projects/") && pathname.includes("/issues/")
         ? "Issue Details"
       : pathname.startsWith("/projects/") && pathname.endsWith("/issues")

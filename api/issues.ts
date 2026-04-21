@@ -1,5 +1,7 @@
 import { apiInstance } from "./instance"
 import {
+  BacklogFilters,
+  BacklogResponse,
   CreateIssueDto,
   Issue,
   IssueFilters,
@@ -51,5 +53,16 @@ export const issuesApi = {
   remove: (projectId: number, issueId: number) =>
     apiInstance<{ success: boolean }>(`/projects/${projectId}/issues/${issueId}`, {
       method: "DELETE",
+    }),
+  getBacklog: (projectId: number, filters?: BacklogFilters) =>
+    apiInstance<BacklogResponse>(
+      `/projects/${projectId}/backlog${buildIssueQuery(filters)}`,
+    ),
+  moveToSprint: (projectId: number, issueId: number, sprintId?: number) =>
+    apiInstance<Issue>(`/projects/${projectId}/issues/${issueId}/move-to-sprint`, {
+      method: "POST",
+      json: {
+        sprintId,
+      },
     }),
 }

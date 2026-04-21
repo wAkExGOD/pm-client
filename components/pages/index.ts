@@ -1,4 +1,5 @@
 export * from "./Auth/Auth"
+export * from "./Backlog/BacklogPage"
 export * from "./Issues/IssueDetailsPage"
 export * from "./Issues/IssuesPage"
 export * from "./Projects/ProjectsDashboard"

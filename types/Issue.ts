@@ -63,3 +63,19 @@ export type IssueFilters = {
   sprintId?: number | null
   search?: string
 }
+
+export type BacklogResponse = {
+  activeSprint: {
+    id: number
+    name: string
+    startDate: string
+    endDate: string
+  } | null
+  items: Issue[]
+}
+
+export type BacklogFilters = {
+  search?: string
+  sortBy?: "priority" | "createdAt"
+  order?: "asc" | "desc"
+}
