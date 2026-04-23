@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { useProjects } from "@/hooks/useProjects"
 import { ROUTES } from "@/lib/constants/routes"
 import {
@@ -185,7 +186,11 @@ export function IssueDetailsPage({
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input {...field} value={field.value ?? ""} />
+                      <Textarea
+                        {...field}
+                        value={field.value ?? ""}
+                        rows={15}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -280,7 +285,7 @@ export function IssueDetailsPage({
                   )}
                 />
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-3">
                 <FormField
                   control={form.control}
                   name="assigneeId"
