@@ -1,6 +1,6 @@
 "use client"
 
-import { projectsApi, releasesApi } from "@/api"
+import { projectsApi, sprintsApi } from "@/api"
 import { IssuesList } from "@/components/issues/IssuesList"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -17,21 +17,21 @@ import {
   ISSUE_STATUSES,
   type IssueStatus,
 } from "@/types/Issue"
-import type { ReleaseIssueFilters } from "@/types/Release"
+import type { SprintIssueFilters } from "@/types/Sprint"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 
-type ReleaseDetailsPageProps = {
+type SprintDetailsPageProps = {
   projectId: number
-  releaseId: number
+  sprintId: number
 }
 
-export function ReleaseDetailsPage({
+export function SprintDetailsPage({
   projectId,
-  releaseId,
-}: ReleaseDetailsPageProps) {
+  sprintId,
+}: SprintDetailsPageProps) {
   const { setSelectedProjectId } = useProjects()
-  const [filters, setFilters] = useState<ReleaseIssueFilters>({
+  const [filters, setFilters] = useState<SprintIssueFilters>({
     sortBy: "date",
     order: "desc",
   })
@@ -50,42 +50,39 @@ export function ReleaseDetailsPage({
     queryFn: () => projectsApi.listMembers(projectId),
   })
 
-  const releaseInfoQuery = useQuery({
-    queryKey: ["release", projectId, releaseId, "info"],
-    queryFn: () => releasesApi.getById(projectId, releaseId),
+  const sprintInfoQuery = useQuery({
+    queryKey: ["sprint", projectId, sprintId, "info"],
+    queryFn: () => sprintsApi.getById(projectId, sprintId),
   })
 
-  const releaseIssuesQuery = useQuery({
-    queryKey: ["release", projectId, releaseId, "issues", filters],
-    queryFn: () => releasesApi.getById(projectId, releaseId, filters),
+  const sprintIssuesQuery = useQuery({
+    queryKey: ["sprint", projectId, sprintId, "issues", filters],
+    queryFn: () => sprintsApi.getById(projectId, sprintId, filters),
   })
 
   return (
     <div className="space-y-6">
       <Card className="border-border/60">
         <CardHeader>
-          <CardTitle>
-            {releaseInfoQuery.data?.name || `Release #${releaseId}`}
-          </CardTitle>
+          <CardTitle>{sprintInfoQuery.data?.name || `Sprint #${sprintId}`}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
           <p>
             Project: {projectQuery.data?.name || "Project"}{" "}
             {projectQuery.data ? `(${projectQuery.data.key})` : ""}
           </p>
-          <p>Status: {releaseInfoQuery.data?.status || "UNRELEASED"}</p>
+          <p>Status: {sprintInfoQuery.data?.isActive ? "Active" : "Inactive"}</p>
           <p>
-            Start: {releaseInfoQuery.data?.startDate.slice(0, 10) || "—"} · Release:{" "}
-            {releaseInfoQuery.data?.releaseDate.slice(0, 10) || "—"}
+            Start: {sprintInfoQuery.data?.startDate.slice(0, 10) || "—"} · End:{" "}
+            {sprintInfoQuery.data?.endDate.slice(0, 10) || "—"}
           </p>
-          <p>Initiator: {releaseInfoQuery.data?.initiator.name || "—"}</p>
-          <p>{releaseInfoQuery.data?.description || "No description yet."}</p>
+          <p>{sprintInfoQuery.data?.goal || "No sprint goal yet."}</p>
         </CardContent>
       </Card>
 
       <Card className="border-border/60">
         <CardHeader>
-          <CardTitle>Main Section</CardTitle>
+          <CardTitle>Sprint Issues</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-4">
@@ -104,7 +101,7 @@ export function ReleaseDetailsPage({
               onValueChange={(value) =>
                 setFilters((prev) => ({
                   ...prev,
-                  sortBy: value as ReleaseIssueFilters["sortBy"],
+                  sortBy: value as SprintIssueFilters["sortBy"],
                 }))
               }
             >
@@ -168,14 +165,14 @@ export function ReleaseDetailsPage({
             </Select>
           </div>
 
-          {releaseIssuesQuery.isLoading ? <p>Loading release issues...</p> : null}
-          {!releaseIssuesQuery.isLoading ? (
+          {sprintIssuesQuery.isLoading ? <p>Loading sprint issues...</p> : null}
+          {!sprintIssuesQuery.isLoading ? (
             <IssuesList
-              issues={releaseIssuesQuery.data?.issues ?? []}
+              issues={sprintIssuesQuery.data?.issues ?? []}
               projectId={projectId}
               projectKey={projectQuery.data?.key ?? "PRJ"}
               members={membersQuery.data ?? []}
-              emptyMessage="No issues in this release yet."
+              emptyMessage="No issues in this sprint yet."
             />
           ) : null}
         </CardContent>

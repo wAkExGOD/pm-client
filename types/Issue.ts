@@ -20,6 +20,7 @@ export type IssueUser = {
   id: number
   name: string
   email: string
+  avatarUrl?: string | null
 }
 
 export type IssueSprint = {
@@ -43,6 +44,7 @@ export type Issue = {
   type: IssueType
   priority: IssuePriority
   status: IssueStatus
+  storyPoints: number | null
   assigneeId: number | null
   reporterId: number
   sprintId: number | null
@@ -69,9 +71,10 @@ export type CreateIssueDto = {
   type: IssueType
   priority: IssuePriority
   status?: IssueStatus
-  assigneeId?: number
-  sprintId?: number
-  releaseId?: number
+  assigneeId?: number | null
+  sprintId?: number | null
+  releaseId?: number | null
+  storyPoints?: number | null
 }
 
 export type UpdateIssueDto = Partial<CreateIssueDto>
@@ -112,4 +115,12 @@ export type BoardColumn = {
 
 export type BoardResponse = {
   columns: BoardColumn[]
+}
+
+export type IssueComment = {
+  id: number
+  content: string
+  createdAt: string
+  updatedAt: string
+  author: IssueUser
 }

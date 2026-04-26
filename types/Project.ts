@@ -17,6 +17,7 @@ export type ProjectDetails = ProjectSummary & {
     id: number
     email: string
     name: string
+    avatarUrl?: string | null
   }
 }
 
@@ -36,6 +37,7 @@ export type ProjectMember = {
     id: number
     email: string
     name: string
+    avatarUrl?: string | null
     verified: boolean
   }
 }

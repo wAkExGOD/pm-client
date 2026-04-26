@@ -1,6 +1,7 @@
 "use client"
 
 import { issuesApi, projectsApi } from "@/api"
+import { IssuesList } from "@/components/issues/IssuesList"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,10 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useProjects } from "@/hooks/useProjects"
-import { ROUTES } from "@/lib/constants/routes"
-import { ISSUE_STATUS_LABELS, type BacklogFilters } from "@/types/Issue"
+import { type BacklogFilters } from "@/types/Issue"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import Link from "next/link"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
@@ -40,6 +39,11 @@ export function BacklogPage({ projectId }: BacklogPageProps) {
     queryFn: () => projectsApi.getById(projectId),
   })
 
+  const membersQuery = useQuery({
+    queryKey: ["project-members", projectId],
+    queryFn: () => projectsApi.listMembers(projectId),
+  })
+
   const backlogQuery = useQuery({
     queryKey: ["backlog", projectId, filters],
     queryFn: () => issuesApi.getBacklog(projectId, filters),
@@ -50,6 +54,7 @@ export function BacklogPage({ projectId }: BacklogPageProps) {
       queryClient.invalidateQueries({ queryKey: ["backlog", projectId] }),
       queryClient.invalidateQueries({ queryKey: ["issues", projectId] }),
       queryClient.invalidateQueries({ queryKey: ["issue", projectId] }),
+      queryClient.invalidateQueries({ queryKey: ["sprints", projectId] }),
     ])
   }
 
@@ -98,7 +103,10 @@ export function BacklogPage({ projectId }: BacklogPageProps) {
               ? `Active sprint: ${backlogQuery.data.activeSprint.name}`
               : "There is no active sprint yet. Backlog still shows issues outside any active sprint."}
           </p>
-          <p>{projectQuery.data?.description || "Plan work before it enters the sprint."}</p>
+          <p>
+            {projectQuery.data?.description ||
+              "Plan work before it enters the sprint."}
+          </p>
         </CardContent>
       </Card>
 
@@ -160,38 +168,16 @@ export function BacklogPage({ projectId }: BacklogPageProps) {
         </CardHeader>
         <CardContent className="space-y-3">
           {backlogQuery.isLoading ? <p>Loading backlog...</p> : null}
-          {!backlogQuery.isLoading && !backlogQuery.data?.items.length ? (
-            <p className="text-sm text-muted-foreground">No backlog items found.</p>
-          ) : null}
-          {backlogQuery.data?.items.map((issue) => (
-            <div
-              key={issue.id}
-              className="rounded-xl border border-border/60 p-4"
-            >
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    {issue.type} · {issue.priority} · {ISSUE_STATUS_LABELS[issue.status]}
-                  </p>
-                  <Link
-                    href={ROUTES.projectIssue(projectId, issue.id)}
-                    className="font-semibold hover:underline"
-                  >
-                    {issue.title}
-                  </Link>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {issue.assignee
-                      ? `Assigned to ${issue.assignee.name}`
-                      : "Unassigned"}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {issue.sprint?.name
-                      ? `Current sprint: ${issue.sprint.name}`
-                      : "Currently in backlog"}
-                  </p>
-                </div>
+          {!backlogQuery.isLoading ? (
+            <IssuesList
+              issues={backlogQuery.data?.items ?? []}
+              projectId={projectId}
+              projectKey={projectQuery.data?.key ?? "PRJ"}
+              members={membersQuery.data ?? []}
+              emptyMessage="No backlog items found."
+              renderActions={(issue) => (
                 <div className="flex flex-wrap gap-2">
-                  {backlogQuery.data.activeSprint ? (
+                  {backlogQuery.data?.activeSprint ? (
                     <Button
                       size="sm"
                       onClick={() => moveToActiveSprintMutation.mutate(issue.id)}
@@ -211,9 +197,9 @@ export function BacklogPage({ projectId }: BacklogPageProps) {
                     </Button>
                   ) : null}
                 </div>
-              </div>
-            </div>
-          ))}
+              )}
+            />
+          ) : null}
         </CardContent>
       </Card>
     </div>

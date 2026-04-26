@@ -2,7 +2,7 @@
 
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { UserAvatar } from "@/components/common"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,21 +22,6 @@ import { useAuth } from "@/hooks/useAuth"
 import Link from "next/link"
 import { ROUTES } from "@/lib/constants/routes"
 
-const getInitials = (name: string, email: string) => {
-  const normalizedName = name.trim()
-
-  if (!normalizedName) {
-    return email.slice(0, 2).toLocaleUpperCase()
-  }
-
-  return normalizedName
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toLocaleUpperCase() ?? "")
-    .join("")
-}
-
 export function NavUser() {
   const { user, logout } = useAuth()
   const { isMobile } = useSidebar()
@@ -44,8 +29,6 @@ export function NavUser() {
   if (!user) {
     return null
   }
-
-  const shortNickname = getInitials(user.name, user.email)
 
   return (
     <SidebarMenu>
@@ -56,12 +39,12 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage alt={user.email} />
-                <AvatarFallback className="rounded-lg">
-                  {shortNickname}
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar
+                name={user.name}
+                email={user.email}
+                avatarUrl={user.avatarUrl}
+                className="h-8 w-8 rounded-lg"
+              />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
@@ -77,12 +60,12 @@ export function NavUser() {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage alt={user.email} />
-                  <AvatarFallback className="rounded-lg">
-                    {shortNickname}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  name={user.name}
+                  email={user.email}
+                  avatarUrl={user.avatarUrl}
+                  className="h-8 w-8 rounded-lg"
+                />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
                   <span className="truncate text-xs">{user.email}</span>

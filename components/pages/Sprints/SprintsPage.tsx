@@ -13,8 +13,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useProjects } from "@/hooks/useProjects"
+import { ROUTES } from "@/lib/constants/routes"
 import { type CreateSprintDto } from "@/types/Sprint"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import Link from "next/link"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -246,7 +248,12 @@ export function SprintsPage({ projectId }: SprintsPageProps) {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="font-medium">{sprint.name}</p>
+                    <Link
+                      href={ROUTES.projectSprint(projectId, sprint.id)}
+                      className="font-medium hover:underline"
+                    >
+                      {sprint.name}
+                    </Link>
                     <p className="text-sm text-muted-foreground">
                       {sprint.startDate.slice(0, 10)} to {sprint.endDate.slice(0, 10)}
                     </p>

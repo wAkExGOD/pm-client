@@ -1,3 +1,5 @@
+import type { Issue, IssueStatus } from "./Issue"
+
 export type Sprint = {
   id: number
   projectId: number
@@ -19,3 +21,15 @@ export type CreateSprintDto = {
 }
 
 export type UpdateSprintDto = Partial<CreateSprintDto>
+
+export type SprintDetails = Sprint & {
+  issues: Issue[]
+}
+
+export type SprintIssueFilters = {
+  status?: IssueStatus
+  assigneeId?: number
+  sortBy?: "date" | "status"
+  order?: "asc" | "desc"
+  search?: string
+}

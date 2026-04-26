@@ -1,6 +1,7 @@
 "use client"
 
 import { projectsApi } from "@/api"
+import { UserAvatar } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -12,7 +13,13 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useProjects } from "@/hooks/useProjects"
 import { ProjectRole } from "@/types/Project"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -63,7 +70,9 @@ export function ProjectTeam({ projectId }: ProjectTeamProps) {
         role: values.role,
       }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["project-members", projectId] })
+      await queryClient.invalidateQueries({
+        queryKey: ["project-members", projectId],
+      })
       await queryClient.invalidateQueries({ queryKey: ["projects"] })
       form.reset({
         email: "",
@@ -86,12 +95,17 @@ export function ProjectTeam({ projectId }: ProjectTeamProps) {
       <Card className="border-border/60">
         <CardHeader>
           <CardTitle>
-            {project?.name || "Project team"} {project ? `(${project.key})` : ""}
+            {project?.name || "Project team"}{" "}
+            {project ? `(${project.key})` : ""}
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-2 text-sm text-muted-foreground">
           <p>{project?.description || "No description yet."}</p>
-          {project?.owner ? <p>Owner: {project.owner.name} ({project.owner.email})</p> : null}
+          {project?.owner ? (
+            <p>
+              Owner: {project.owner.name} ({project.owner.email})
+            </p>
+          ) : null}
           {project ? <p>Your role: {project.currentUserRole}</p> : null}
         </CardContent>
       </Card>
@@ -109,7 +123,9 @@ export function ProjectTeam({ projectId }: ProjectTeamProps) {
             ) : (
               <Form {...form}>
                 <form
-                  onSubmit={form.handleSubmit((values) => addMemberMutation.mutate(values))}
+                  onSubmit={form.handleSubmit((values) =>
+                    addMemberMutation.mutate(values),
+                  )}
                   className="space-y-4"
                 >
                   <FormField
@@ -120,7 +136,10 @@ export function ProjectTeam({ projectId }: ProjectTeamProps) {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="teammate@example.com" {...field} />
+                          <Input
+                            placeholder="teammate@example.com"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -180,13 +199,24 @@ export function ProjectTeam({ projectId }: ProjectTeamProps) {
                 key={member.id}
                 className="flex items-center justify-between rounded-xl border border-border/60 p-4"
               >
-                <div>
-                  <p className="font-medium">{member.user.name}</p>
-                  <p className="text-sm text-muted-foreground">{member.user.email}</p>
+                <div className="flex items-center gap-3">
+                  <UserAvatar
+                    name={member.user.name}
+                    email={member.user.email}
+                    avatarUrl={member.user.avatarUrl}
+                  />
+                  <div>
+                    <p className="font-medium">{member.user.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {member.user.email}
+                    </p>
+                  </div>
                 </div>
                 <div className="text-right text-sm text-muted-foreground">
                   <p>{member.role}</p>
-                  <p>{member.user.verified ? "Verified" : "Pending verification"}</p>
+                  <p>
+                    {member.user.verified ? "Verified" : "Pending verification"}
+                  </p>
                 </div>
               </div>
             ))}

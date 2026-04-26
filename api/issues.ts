@@ -4,11 +4,13 @@ import {
   BacklogResponse,
   BoardResponse,
   CreateIssueDto,
+  IssueComment,
   Issue,
   IssueFilters,
   IssueListResponse,
   UpdateIssueDto,
 } from "@/types/Issue"
+import { ProjectSummaryStats } from "@/types/Summary"
 
 const buildIssueQuery = (filters?: IssueFilters) => {
   if (!filters) {
@@ -68,4 +70,20 @@ export const issuesApi = {
         sprintId,
       },
     }),
+  listComments: (projectId: number, issueId: number) =>
+    apiInstance<IssueComment[]>(`/projects/${projectId}/issues/${issueId}/comments`),
+  createComment: (projectId: number, issueId: number, content: string) =>
+    apiInstance<IssueComment>(`/projects/${projectId}/issues/${issueId}/comments`, {
+      method: "POST",
+      json: { content },
+    }),
+  deleteComment: (projectId: number, issueId: number, commentId: number) =>
+    apiInstance<{ success: boolean }>(
+      `/projects/${projectId}/issues/${issueId}/comments/${commentId}`,
+      {
+        method: "DELETE",
+      },
+    ),
+  getSummary: (projectId: number) =>
+    apiInstance<ProjectSummaryStats>(`/projects/${projectId}/summary`),
 }

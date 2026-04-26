@@ -11,6 +11,7 @@ import {
   ListTodo,
   Columns3,
   Rocket,
+  ChartColumn,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -50,6 +51,11 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
     },
     ...(selectedProject
       ? [
+          {
+            title: "Summary",
+            url: ROUTES.projectSummary(selectedProject.id),
+            icon: ChartColumn,
+          },
           {
             title: "Backlog",
             url: ROUTES.projectBacklog(selectedProject.id),
@@ -95,12 +101,22 @@ export function AppNavBar({ ...props }: ComponentProps<typeof Sidebar>) {
       return
     }
 
+    if (pathname.endsWith("/summary")) {
+      router.push(ROUTES.projectSummary(projectId))
+      return
+    }
+
     if (pathname.endsWith("/board")) {
       router.push(ROUTES.projectBoard(projectId))
       return
     }
 
     if (pathname.endsWith("/sprints")) {
+      router.push(ROUTES.projectSprints(projectId))
+      return
+    }
+
+    if (pathname.includes("/sprints/")) {
       router.push(ROUTES.projectSprints(projectId))
       return
     }

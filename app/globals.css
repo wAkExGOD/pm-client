@@ -142,6 +142,105 @@
   --chart-10: 27 87% 67%;
 }
 
+.tiptap {
+  /* Параграфы */
+  p {
+    @apply my-4 first:mt-0 last:mb-0 text-base leading-relaxed;
+  }
+
+  /* Заголовки */
+  h1 {
+    @apply text-3xl font-bold mt-8 mb-4 first:mt-0 last:mb-0;
+  }
+
+  h2 {
+    @apply text-2xl font-bold mt-6 mb-3 first:mt-0 last:mb-0;
+  }
+
+  h3 {
+    @apply text-xl font-bold mt-4 mb-2 first:mt-0 last:mb-0;
+  }
+
+  /* Жирный, курсив, подчёркивание */
+  strong {
+    @apply font-bold;
+  }
+
+  em {
+    @apply italic;
+  }
+
+  u {
+    @apply underline underline-offset-2;
+  }
+
+  s,
+  strike {
+    @apply line-through;
+  }
+
+  /* Списки */
+  ul {
+    @apply list-disc pl-6 my-4 space-y-1;
+  }
+
+  ol {
+    @apply list-decimal pl-6 my-4 space-y-1;
+  }
+
+  li {
+    @apply leading-relaxed;
+
+    p {
+      @apply my-0;
+    }
+  }
+
+  li > ul,
+  li > ol {
+    @apply my-1;
+  }
+
+  /* Цитаты */
+  blockquote {
+    @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4;
+  }
+
+  /* Ссылки */
+  a {
+    @apply text-primary underline underline-offset-2 hover:text-primary/80;
+  }
+
+  /* Код */
+  code {
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  pre {
+    @apply bg-muted p-4 rounded-lg my-4 overflow-x-auto;
+
+    code {
+      @apply bg-transparent p-0 text-sm;
+    }
+  }
+
+  /* Горизонтальная линия */
+  hr {
+    @apply border-t border-border my-6;
+  }
+
+  /* Placeholder (если используете extension-placeholder) */
+  p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    @apply text-muted-foreground float-left pointer-events-none h-0;
+  }
+
+  /* Фокус на нодах (например, изображения) */
+  .ProseMirror-selectednode {
+    @apply outline outline-2 outline-primary outline-offset-2 rounded-sm;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
